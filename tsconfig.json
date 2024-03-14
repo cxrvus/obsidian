@@ -1,0 +1,12 @@
+{
+    "exclude": ["./tmp/ts/**/*.ts"],
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"module": "CommonJS",
+		"target": "ES2022",
+		"lib": ["ES2022"],
+        "types": ["node", "jest"],
+		"rootDir": "src",
+		"outDir": "dist"
+	},
+}

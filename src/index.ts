@@ -2,7 +2,7 @@ import * as fs from 'fs'
 
 export const loadDir = (dir: string) => {
 	return fs.readdirSync(dir)
-		// .filter((name) => !name.endsWith('.md'))
+		.filter((name) => name.endsWith('.md'))
 		.map((name) => ({ 
 			file: getFileObj(name, `${dir}/${name}`)
 		}))

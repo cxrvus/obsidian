@@ -25,13 +25,5 @@ const getFileObj = (dir: string, name: string) => {
 	const { birthtime, mtime, size } = fs.statSync(path)
 	const stats = { birthtime, mtime, size }
 
-	return {
-		attr,
-		attrEntires,
-		content,
-		name,
-		path,
-		rawContent,
-		stats,
-	};
+	return { attr, attrEntires, content, name, path, rawContent, stats };
 }

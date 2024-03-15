@@ -27,3 +27,10 @@ const getFileObj = (dir: string, name: string) => {
 
 	return { attr, attrEntires, content, name, path, rawContent, stats };
 }
+
+
+const stringFromFileObj = (fileObj: ReturnType<typeof getFileObj>) => {
+	const { attr, content } = fileObj
+	const attrStr = JSON.stringify(attr, Object.keys(attr).sort(), '\t');
+	return `---\n${attrStr}\n---\n${content}`
+}

@@ -1,11 +1,21 @@
 import * as fs from 'fs'
 import path = require('path');
 
+
 export const loadDir = (dir: string) => {
 	return fs.readdirSync(dir)
 		.filter((name) => name.endsWith('.md'))
 		.map((name) => getFileObj(dir, name))
 	;
+}
+
+
+export const saveDir = (data: ReturnType<typeof loadDir>) => {
+	data.forEach((fileObj) => {
+		const { path } = fileObj;
+		const fullContent = stringFromFileObj(fileObj);
+		fs.writeFileSync(path, fullContent);
+	});
 }
 
 

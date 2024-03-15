@@ -6,6 +6,7 @@ export const loadDir = (dir: string) => {
 	return fs.readdirSync(dir)
 		.filter((name) => name.endsWith('.md'))
 		.map((name) => getFileObj(dir, name))
+		.filter((fileObj) => fileObj !== null)
 	;
 }
 
@@ -29,7 +30,17 @@ const getFileObj = (dir: string, name: string) => {
 	const frontMatterEnd = lines.indexOf('---', 2)
 	const frontMatter = hasValidFrontMatter ? lines.slice(1, frontMatterEnd).join('\n') : '{}'
 	const content = hasValidFrontMatter ? lines.slice(frontMatterEnd + 1).join('\n') : rawContent
-	const attr = JSON.parse(frontMatter)
+
+	let attr: Object
+
+	try {
+		attr = JSON.parse(frontMatter)
+	}
+	catch (e) {
+		console.log('Error parsing front matter in file: ', path)
+		return null
+	}
+
 	const attrEntires = Object.entries(attr)
 
 	const { birthtime, mtime, size } = fs.statSync(path)

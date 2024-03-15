@@ -22,6 +22,9 @@ const getFileObj = (dir: string, name: string) => {
 	const attr = JSON.parse(frontMatter)
 	const attrEntires = Object.entries(attr)
 
+	const { birthtime, mtime, size } = fs.statSync(path)
+	const stats = { birthtime, mtime, size }
+
 	return {
 		attr,
 		attrEntires,
@@ -29,6 +32,6 @@ const getFileObj = (dir: string, name: string) => {
 		name,
 		path,
 		rawContent,
-		stats: fs.statSync(path),
+		stats,
 	};
 }

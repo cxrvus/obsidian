@@ -67,8 +67,15 @@ const parseFrontMatter = (frontMatter: string, fileName: string) => {
 
 const stringifyFrontMatter = (frontMatter: object, frontMatterMode: FrontMatterMode, fileName: string) => {
 	try {
-		if (frontMatterMode === 'yaml') return yaml.dump(frontMatter).trim()
-		else if (frontMatterMode === 'json') return JSON.stringify(frontMatter, Object.keys(frontMatter).sort(), '\t')
+		if (frontMatterMode === 'yaml') {
+			return yaml.dump(frontMatter, {
+				sortKeys: true,
+				quotingType: '"',
+			}).trim()
+		}
+		else if (frontMatterMode === 'json') {
+			return JSON.stringify(frontMatter, Object.keys(frontMatter).sort(), '\t')
+		}
 	}
 	catch (e) {
 		console.log('Error stringifying front matter\n', e.message, fileName)

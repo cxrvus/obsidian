@@ -1,27 +1,27 @@
 import * as fs from 'fs'
-import path = require('path');
 
 
-export const loadDir = (dir: string) => {
-	return fs.readdirSync(dir)
-		.filter((name) => name.endsWith('.md'))
-		.map((name) => getFileObj(dir, name))
-		.filter((fileObj) => fileObj !== null)
+type Dir = ReturnType<typeof loadDir>
+type File = ReturnType<typeof loadFile>
+
+
+export const loadDir = (dirName: string) => {
+	return fs.readdirSync(dirName)
+		.map((fileName) => loadFile(dirName, fileName))
+		.filter((file) => file !== null)
 	;
 }
 
 
-export const saveDir = (data: ReturnType<typeof loadDir>) => {
-	data.forEach((fileObj) => {
-		const { path } = fileObj;
-		const fullContent = stringFromFileObj(fileObj);
-		fs.writeFileSync(path, fullContent);
-	});
+export const saveDir = (dir: Dir) => {
+	dir.forEach((file) => { saveFile(file) })
 }
 
 
-const getFileObj = (dir: string, name: string) => {
-	const path = `${dir}/${name}`
+export const loadFile = (dirName: string, fileName: string) => {
+	if(!fileName?.endsWith('.md')) return null
+
+	const path = `${dirName}/${fileName}`
 	const rawContent = fs.readFileSync(path, 'utf-8')
 
 	const lines = rawContent.split('\n')
@@ -46,12 +46,13 @@ const getFileObj = (dir: string, name: string) => {
 	const { birthtime, mtime, size } = fs.statSync(path)
 	const stats = { birthtime, mtime, size }
 
-	return { attr, attrEntries, content, name, path, rawContent, stats };
+	return { attr, attrEntries, content, name: fileName, path, rawContent, stats };
 }
 
 
-const stringFromFileObj = (fileObj: ReturnType<typeof getFileObj>) => {
-	const { attr, content } = fileObj
+export const saveFile = (file: File) => {
+	const { attr, content, path } = file
 	const attrStr = JSON.stringify(attr, Object.keys(attr).sort(), '\t');
-	return `---\n${attrStr}\n---\n${content}`
+	const newContent = `---\n${attrStr}\n---\n${content}`
+	fs.writeFileSync(path, newContent);
 }

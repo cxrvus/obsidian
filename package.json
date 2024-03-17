@@ -9,7 +9,11 @@
   "author": "Benito Rabe",
   "license": "UNLICENSED",
   "dependencies": {
-    "@types/node": "^20.11.28",
+    "js-yaml": "^4.1.0",
     "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.28",
+    "@types/js-yaml": "^4.0.9"
   }
 }

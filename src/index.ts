@@ -41,12 +41,12 @@ const getFileObj = (dir: string, name: string) => {
 		return null
 	}
 
-	const attrEntires = Object.entries(attr)
+	const attrEntries = Object.entries(attr)
 
 	const { birthtime, mtime, size } = fs.statSync(path)
 	const stats = { birthtime, mtime, size }
 
-	return { attr, attrEntires, content, name, path, rawContent, stats };
+	return { attr, attrEntries, content, name, path, rawContent, stats };
 }
 
 

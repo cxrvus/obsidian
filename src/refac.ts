@@ -46,12 +46,13 @@ export const loadFile = (dirName: string, fileName: string) => {
 	const { birthtime, mtime, size } = fs.statSync(path)
 	const stats = { birthtime, mtime, size }
 
-	return { attr, attrEntries, content, name: fileName, path, rawContent, stats };
+	return { attr, attrEntries, content, dir: dirName, name: fileName, path, rawContent, stats };
 }
 
 
 export const saveFile = (file: File) => {
-	const { attr, content, path } = file
+	const { attr, content, dir, name } = file
+	const path = `${dir}/${name}`
 	const attrStr = JSON.stringify(attr, Object.keys(attr).sort(), '\t');
 	const newContent = `---\n${attrStr}\n---\n${content}`
 	fs.writeFileSync(path, newContent);

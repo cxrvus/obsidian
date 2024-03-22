@@ -1,44 +1,57 @@
-import { error } from 'console';
 import * as yup from 'yup';
 
-const types = {
-	"aliases": 				yup.array().of(yup.string()),
-	"annotation-target": 	yup.object(),
-	"date": 				yup.object(),
-	"deadline": 			yup.object(),
-	"done": 				yup.object(),
-	"due": 					yup.object(),
-	"flows": 				yup.object(),
-	"height": 				yup.object(),
-	"margin": 				yup.object(),
-	"prio": 				yup.object(),
-	"ref": 					yup.object(),
-	"repeat": 				yup.object(),
-	"template": 			yup.object(),
-	"theme": 				yup.object(),
-	"transition": 			yup.object(),
-	"width": 				yup.object(),
-	"year": 				yup.object(),
+
+const linkRegEx = /^\[\[.*\]\]$/;
+const dateRegEx = /^\d{4}-\d{2}-\d{2}$/;
+const durationRegEx = /^\d+ (d|w|mo)$/;
+
+const typeCodesToTypes: {[tp: string]: yup.Schema} = {
+	ANY: yup.mixed(),
+	STR: yup.string(),
+	LSTR: yup.array(yup.string()),
+	NUM: yup.number(),
+	LNUM: yup.array(yup.number()),
+	LNK: yup.string().matches(linkRegEx),
+	LLNK: yup.array(yup.string().matches(linkRegEx)),
+	DATE: yup.string().matches(dateRegEx),
+	DUR: yup.string().matches(durationRegEx),
+	LDUR: yup.array(yup.string().matches(durationRegEx)),
 }
 
 
-export const validateFrontmatter = (frontmatter: {[key: string]: unknown}) => {
-	Object.entries(frontmatter)
-		.map(entry => validateEntry(entry))
-		.map(([_, error]) => error)
-		.join("\n")
+export const validateFrontmatter = (frontmatter: {[key: string]: unknown}, propKeysToTypeCodes: {[key: string]: string}) => {
+	const propKeysToTypeCodeEntries = Object.entries(propKeysToTypeCodes)
+
+	try { yup.array(yup.array(yup.string().required()).length(2)).validateSync(propKeysToTypeCodeEntries) }
+	catch (_) { throw new Error("type specification must be an object with string values") }
+
+	const propKeysToTypeEntries = propKeysToTypeCodeEntries.map(([key, type]) => [key, typeCodesToTypes[type]])
+	
+	const invalidTypeCode = propKeysToTypeEntries.find(([_, type]) => !type)
+	if (invalidTypeCode) { throw new Error(`unknown type code: ${invalidTypeCode[1]}`) }
+
+	const propKeysToTypes: {[key: string]: yup.Schema} = Object.fromEntries(propKeysToTypeEntries)
+	
+	const errorMessage = Object.entries(frontmatter)
+		.map(entry => validateEntry(entry, propKeysToTypes))
+		.filter(([_, error]) => error)
+		.map(([key, error]) => `[${key}]: ${error}`)
+		.join(";\n\n")
 	;
+
+	return errorMessage
 }
 
 
-const validateEntry = (entry: [string, unknown]): [string, string] => {
+const validateEntry = (entry: [string, unknown], fullSchema: {[key: string]: yup.Schema}): [string, string] => {
 	const [key, value] = entry;
-	const schema = types[key];
-	if (!schema) {
-		return [key, `unknown property key: ${key}`];
-	}
+	const entrySchema = fullSchema[key];
+
+	if (!value) { return [key, `property values must not be empty: ${key}`]; }
+	if (!entrySchema) { return [key, `unknown property key: ${key}`]; }
+
 	try {
-		schema.validateSync(value);
+		entrySchema.validateSync(value);
 		return [key, ""];
 	} catch (error) {
 		return [key, error.message];

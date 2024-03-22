@@ -16,6 +16,7 @@ const typeCodesToTypes: {[tp: string]: yup.Schema} = {
 	DATE: yup.string().matches(dateRegEx),
 	DUR: yup.string().matches(durationRegEx),
 	LDUR: yup.array(yup.string().matches(durationRegEx)),
+	BOOL: yup.boolean(),
 }
 
 

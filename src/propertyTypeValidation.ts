@@ -47,7 +47,7 @@ const validateEntry = (entry: [string, unknown], fullSchema: {[key: string]: yup
 	const [key, value] = entry;
 	const entrySchema = fullSchema[key];
 
-	if (!value) { return [key, `property values must not be empty: ${key}`]; }
+	if (!value && value !== 0) { return [key, `property values must not be empty: ${key}`]; }
 	if (!entrySchema) { return [key, `unknown property key: ${key}`]; }
 
 	try {

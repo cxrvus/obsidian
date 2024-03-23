@@ -3,7 +3,8 @@ import * as yup from 'yup';
 
 const linkRegEx = /^\[\[.*\]\]$/;
 const dateRegEx = /^\d{4}-\d{2}-\d{2}$/;
-const durationRegEx = /^\d+ (d|w|mo)$/;
+const longDurationRegEx = /^\d+ (d|w|mo)$/;
+const shortDurationRegEx = /^\d+ [mh]$/;
 
 const typeCodesToTypes: {[tp: string]: yup.Schema} = {
 	ANY: yup.mixed(),
@@ -14,8 +15,8 @@ const typeCodesToTypes: {[tp: string]: yup.Schema} = {
 	LNK: yup.string().matches(linkRegEx),
 	LLNK: yup.array(yup.string().matches(linkRegEx)),
 	DATE: yup.string().matches(dateRegEx),
-	DUR: yup.string().matches(durationRegEx),
-	LDUR: yup.array(yup.string().matches(durationRegEx)),
+	DUR: yup.string().matches(shortDurationRegEx),
+	XDUR: yup.string().matches(longDurationRegEx),
 	BOOL: yup.boolean(),
 }
 

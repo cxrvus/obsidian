@@ -25,7 +25,7 @@ const prioIcon = prio => ({
 	B: '🔴',
 	C: '🟡',
 	D: '🔵',
-	F: '',
+	F: '⚫',
 }[prio])
 
 const iconizePrio = task => ({
@@ -38,12 +38,17 @@ const timeIcon = time => ({
 	H: '⛅', // 17-18
 	X: '🌙', // 21-00
 	Z: '💤', // 00-08
-	_: ''
+	_: '◾'
 }[time])
 
 const iconizeTime = task => ({
 	...task, time: timeIcon(task.time) ?? 'INVALID'
 })
+
+const getOverdueAmount = task => {
+	const overdue = task.due.diff(today, 'days').days
+	return overdue > 0 ? overdue : ''
+}
 
 
 // # QUERIES
@@ -87,7 +92,7 @@ const dueToday = dueTasks
 	.sort(x => x.prio + x.due.toString() + x.time)
 	.map(x => iconizePrio(x))
 	.map(x => iconizeTime(x))
-	.map(x => ({ ...x, time: `${x.due.day} ${x.time}` }))
+	.map(x => ({ ...x, time: `${x.time} ${getOverdueAmount(x)}` }))
 ;
 
 const dueWhenever = dueTasks

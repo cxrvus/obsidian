@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/refac.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	"build": "tsc && cp src/*.js dist",
+	"refac": "node dist/refac.js"
   },
   "author": "Benito Rabe",
   "license": "UNLICENSED",

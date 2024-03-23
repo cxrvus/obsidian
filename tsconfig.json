@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
 		"moduleResolution": "node",
 		"module": "CommonJS",
 		"target": "ES2022",

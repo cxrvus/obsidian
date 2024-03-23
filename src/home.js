@@ -71,6 +71,7 @@ const tasks = cards
 	.map(x => ({
 		cday: x.file.cday,
 		done: x.done,
+		due: x.due,
 		flows: x.flows,
 		link: x.file.link,
 		prio: x.prio ?? 'F',

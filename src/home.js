@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-undef
-dv = this.dv
+const dvx = dv
 
 
 // # TIMES
 
-const today = dv.date('today')
-const oneMonthAgo = today.minus(dv.duration('1mo'))
-const future = today.plus(dv.duration('3mo'))
+const today = dvx.date('today')
+const oneMonthAgo = today.minus(dvx.duration('1mo'))
+const future = today.plus(dvx.duration('3mo'))
 
 
 // # FUNCTIONS
@@ -16,7 +16,7 @@ const getDue = file => {
 	if (done && !repeat) return null
 	else if(due) return due
 	else if (!done && repeat) return today
-	else if (done && repeat) return dv.date(done).plus(dv.duration(repeat))
+	else if (done && repeat) return dvx.date(done).plus(dvx.duration(repeat))
 	else return null
 }
 
@@ -48,13 +48,13 @@ const iconizeTime = task => ({
 
 // # QUERIES
 
-const dailyNotes = dv.pages('"Documents/Daily"')
-const cards = dv.pages('"Cards"')
+const dailyNotes = dvx.pages('"Documents/Daily"')
+const cards = dvx.pages('"Cards"')
 
 const quickTasks = dailyNotes
 	.map(x => ({
 		tasks: x.file.tasks,
-		cday: dv.date(`20${x.file.name}`)
+		cday: dvx.date(`20${x.file.name}`)
 	}))
 	.filter(x => x.cday > oneMonthAgo)
 	.tasks
@@ -108,26 +108,26 @@ const pinnedCards = cards
 
 // # RENDERING
 
-dv.header(1, today)
+dvx.header(1, today)
 
-dv.header(1, pinnedCards.join(' | '))
+dvx.header(1, pinnedCards.join(' | '))
 
-dv.header(2, 'Due Today')
+dvx.header(2, 'Due Today')
 
-dv.table(['Task', 'Prio', 'Time'],
+dvx.table(['Task', 'Prio', 'Time'],
 	dueToday.map(x => [x.link, x.prio, x.time])
 )
 
-dv.header(3, 'Completed Today')
+dvx.header(3, 'Completed Today')
 
-dv.list(completed.map(x => [x.link]))
+dvx.list(completed.map(x => [x.link]))
 
-dv.header(3, 'Quick Tasks')
+dvx.header(3, 'Quick Tasks')
 
-dv.taskList(quickTasks)
+dvx.taskList(quickTasks)
 
-dv.header(3, 'Scheduled')
+dvx.header(3, 'Scheduled')
 
-dv.table(['Task', 'Prio', 'Due'],
+dvx.table(['Task', 'Prio', 'Due'],
 	dueWhenever.map(x => [x.link, x.prio, x.due])
 )

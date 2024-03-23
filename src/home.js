@@ -127,6 +127,7 @@ const pinnedCards = cards
 		.some(path => path?.includes('Pinned'))
 	)
 	.map(x => x.file.link)
+	.sort()
 ;
 
 

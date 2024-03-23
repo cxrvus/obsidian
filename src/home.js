@@ -116,8 +116,10 @@ const scheduledTasksView = dueWheneverView.filter(x => x.dur)
 const scheduledGoalsView = dueWheneverView.filter(x => !x.dur)
 
 
+const minsToDur = mins => dvx.duration(`${mins}m`)
+
 const workDuration = dueToday.dur.array()
-	.reduce((acc, x) => acc.plus(x), dvx.duration('0m'))
+	.reduce((acc, mins) => acc.plus(minsToDur(mins)), dvx.duration('0m'))
 ;
 
 
@@ -139,7 +141,7 @@ dvx.header(1, pinnedCards.join(' | '))
 
 dvx.header(2, 'Due Today')
 
-dvx.paragraph(`Work due today: **${workDuration.toFormat('h:mm')}h**`)
+dvx.paragraph(`Work due today: **${dvx.duration(workDuration).toFormat('h:mm')}h**`)
 
 dvx.table(['Task', 'Prio', 'Time', 'Duration'],
 	dueTodayView.map(x => [x.link, x.prio, x.time, x.dur])

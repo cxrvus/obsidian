@@ -11,8 +11,8 @@ const future = today.plus(dvx.duration('3mo'))
 
 // # FUNCTIONS
 
-const getDue = file => {
-	const { done, due, repeat } = file
+const getDue = card => {
+	const { done, due, repeat } = card
 	if (done && !repeat) return null
 	else if(due) return due
 	else if (!done && repeat) return today
@@ -70,13 +70,14 @@ const quickTasks = dailyNotes
 const tasks = cards
 	.map(x => ({
 		cday: x.file.cday,
-		due: getDue(x),
-		time: x.time ?? '_',
 		done: x.done,
 		flows: x.flows,
-		prio: x.prio ?? 'F',
 		link: x.file.link,
+		prio: x.prio ?? 'F',
+		repeat: x.repeat,
+		time: x.time ?? '_',
 	}))
+	.map(x => ({ ...x, due: getDue(x) }))
 	.sort(x => x.due)
 ;
 

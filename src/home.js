@@ -47,7 +47,7 @@ const iconizeTime = task => ({
 
 const getOverdueAmount = task => {
 	const overdue = task.due.diff(today, 'days').days
-	return overdue > 0 ? overdue : ''
+	return overdue < 0 ? overdue : ''
 }
 
 

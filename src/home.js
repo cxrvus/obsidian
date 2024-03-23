@@ -1,11 +1,10 @@
-// eslint-disable-next-line no-unused-vars
-const dv = dv
+// eslint-disable-next-line no-undef
+dv = this.dv
 
 
 // # TIMES
 
 const today = dv.date('today')
-const soon = today.plus(dv.duration('2d'))
 const oneMonthAgo = today.minus(dv.duration('1mo'))
 const future = today.plus(dv.duration('3mo'))
 
@@ -81,19 +80,20 @@ const completed = tasks
 	.sort(x => x.link)
 ;
 
-const dueTasks = tasks
-	.filter(x => x.due)
+const dueTasks = tasks.filter(x => x.due)
+
+const dueToday = dueTasks
+	.filter(x => x.due <= today)
 	.sort(x => x.prio + x.due.toString() + x.time)
 	.map(x => iconizePrio(x))
 	.map(x => iconizeTime(x))
-;
-
-const dueSoon = dueTasks
-	.filter(x => x.due <= soon)
+	.map(x => ({ ...x, time: `${x.due.day} ${x.time}` }))
 ;
 
 const dueWhenever = dueTasks
-	.filter(x => x.due > soon && x.due < future)
+	.filter(x => x.due > today && x.due < future)
+	.map(x => iconizePrio(x))
+	.sort(x => x.prio + x.due.toString())
 ;
 
 
@@ -112,10 +112,10 @@ dv.header(1, today)
 
 dv.header(1, pinnedCards.join(' | '))
 
-dv.header(2, 'To Do')
+dv.header(2, 'Due Today')
 
-dv.table(['Task', 'Prio', 'Due', 'Time'],
-	dueSoon.map(x => [x.link, x.prio, x.due, x.time])
+dv.table(['Task', 'Prio', 'Time'],
+	dueToday.map(x => [x.link, x.prio, x.time])
 )
 
 dv.header(3, 'Completed Today')

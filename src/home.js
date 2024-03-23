@@ -72,7 +72,7 @@ const tasks = cards
 		cday: x.file.cday,
 		done: x.done,
 		due: x.due,
-		dur: x.dur ?? dvx.duration('0m'),
+		dur: (x.dur ?? dvx.duration('0m')).as('minutes'),
 		flows: x.flows,
 		link: x.file.link,
 		prio: x.prio ?? 'F',
@@ -111,6 +111,10 @@ const dueWheneverView = dueWhenever
 	.map(x => iconizePrio(x))
 ;
 
+const scheduledTasksView = dueWheneverView.filter(x => x.dur)
+
+const scheduledGoalsView = dueWheneverView.filter(x => !x.dur)
+
 
 const workDuration = dueToday.dur.array()
 	.reduce((acc, x) => acc.plus(x), dvx.duration('0m'))
@@ -137,7 +141,7 @@ dvx.header(2, 'Due Today')
 dvx.paragraph(`Work due today: **${workDuration.toFormat('h:mm')}h**`)
 
 dvx.table(['Task', 'Prio', 'Time', 'Duration'],
-	dueTodayView.map(x => [x.link, x.prio, x.time, x.dur?.as('minutes')])
+	dueTodayView.map(x => [x.link, x.prio, x.time, x.dur])
 )
 
 dvx.header(3, 'Completed Today')
@@ -148,8 +152,14 @@ dvx.header(3, 'Quick Tasks')
 
 dvx.taskList(quickTasks)
 
-dvx.header(3, 'Scheduled')
+dvx.header(3, 'Scheduled Tasks')
 
 dvx.table(['Task', 'Prio', 'Due'],
-	dueWheneverView.map(x => [x.link, x.prio, x.due])
+	scheduledTasksView.map(x => [x.link, x.prio, x.due])
+)
+
+dvx.header(2, 'Goals')
+
+dvx.table(['Task', 'Prio', 'Due'],
+	scheduledGoalsView.map(x => [x.link, x.prio, x.due])
 )

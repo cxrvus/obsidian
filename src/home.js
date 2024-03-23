@@ -72,6 +72,7 @@ const tasks = cards
 		cday: x.file.cday,
 		done: x.done,
 		due: x.due,
+		dur: x.dur ?? dvx.duration('0m'),
 		flows: x.flows,
 		link: x.file.link,
 		prio: x.prio ?? 'F',
@@ -121,8 +122,8 @@ dvx.header(1, pinnedCards.join(' | '))
 
 dvx.header(2, 'Due Today')
 
-dvx.table(['Task', 'Prio', 'Time'],
-	dueToday.map(x => [x.link, x.prio, x.time])
+dvx.table(['Task', 'Prio', 'Time', 'Duration'],
+	dueToday.map(x => [x.link, x.prio, x.time, x.dur?.as('minutes')])
 )
 
 dvx.header(3, 'Completed Today')

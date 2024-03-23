@@ -93,15 +93,24 @@ const dueTasks = tasks.filter(x => x.due)
 const dueToday = dueTasks
 	.filter(x => x.due <= today)
 	.sort(x => x.prio + x.due.toString() + x.time)
+;
+
+const dueWhenever = dueTasks
+	.filter(x => x.due > today && x.due < future)
+	.sort(x => x.prio + x.due.toString())
+;
+
+
+const dueTodayView = dueToday
 	.map(x => iconizePrio(x))
 	.map(x => iconizeTime(x))
 	.map(x => ({ ...x, time: `${x.time} ${getOverdueAmount(x)}` }))
 ;
 
-const dueWhenever = dueTasks
-	.filter(x => x.due > today && x.due < future)
+const dueWheneverView = dueWhenever
 	.map(x => iconizePrio(x))
-	.sort(x => x.prio + x.due.toString())
+;
+
 ;
 
 
@@ -123,7 +132,7 @@ dvx.header(1, pinnedCards.join(' | '))
 dvx.header(2, 'Due Today')
 
 dvx.table(['Task', 'Prio', 'Time', 'Duration'],
-	dueToday.map(x => [x.link, x.prio, x.time, x.dur?.as('minutes')])
+	dueTodayView.map(x => [x.link, x.prio, x.time, x.dur?.as('minutes')])
 )
 
 dvx.header(3, 'Completed Today')
@@ -137,5 +146,5 @@ dvx.taskList(quickTasks)
 dvx.header(3, 'Scheduled')
 
 dvx.table(['Task', 'Prio', 'Due'],
-	dueWhenever.map(x => [x.link, x.prio, x.due])
+	dueWheneverView.map(x => [x.link, x.prio, x.due])
 )

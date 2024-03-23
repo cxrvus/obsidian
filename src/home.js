@@ -111,9 +111,9 @@ const dueWheneverView = dueWhenever
 	.map(x => iconizePrio(x))
 ;
 
-const scheduledTasksView = dueWheneverView.filter(x => x.dur)
+const scheduledTasksView = dueWheneverView.filter(x => x.dur || x.repeat)
 
-const scheduledGoalsView = dueWheneverView.filter(x => !x.dur)
+const scheduledGoalsView = dueWheneverView.filter(x => !(x.dur || x.repeat))
 
 
 const minsToDur = mins => dvx.duration(`${mins}m`)

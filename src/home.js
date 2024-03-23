@@ -1,4 +1,4 @@
-// ## Times
+// # TIMES
 
 const today = dv.date('today')
 const soon = today.plus(dv.duration('2d'))
@@ -6,7 +6,7 @@ const oneMonthAgo = today.minus(dv.duration('1mo'))
 const future = today.plus(dv.duration('3mo'))
 
 
-// ## Funcs
+// # FUNCTIONS
 
 const getDue = file => {
 	const { done, due, repeat } = file
@@ -43,7 +43,7 @@ const iconizeTime = task => ({
 })
 
 
-// ## Queries
+// # QUERIES
 
 const dailyNotes = dv.pages('"Documents/Daily"')
 const cards = dv.pages('"Cards"')
@@ -102,7 +102,7 @@ const pinnedCards = cards
 ;
 
 
-// # Render
+// # RENDERING
 
 dv.header(1, today)
 

@@ -11,7 +11,7 @@ const future = today.plus(dvx.duration('3mo'))
 
 // # FUNCTIONS
 
-const getDue = card => {
+const getActualDue = card => {
 	const { done, due, repeat } = card
 	if (done && !repeat) return null
 	else if(due) return due
@@ -77,7 +77,7 @@ const tasks = cards
 		repeat: x.repeat,
 		time: x.time ?? '_',
 	}))
-	.map(x => ({ ...x, due: getDue(x) }))
+	.map(x => ({ ...x, due: getActualDue(x) }))
 	.sort(x => x.due)
 ;
 

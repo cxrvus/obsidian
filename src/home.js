@@ -92,7 +92,7 @@ const dueTasks = tasks.filter(x => x.due)
 
 const dueToday = dueTasks
 	.filter(x => x.due <= today)
-	.sort(x => x.prio + x.due.toString() + x.time)
+	.sort(x => x.time + x.prio + x.due.toString())
 ;
 
 const dueWhenever = dueTasks
@@ -143,8 +143,8 @@ dvx.header(2, 'Due Today')
 
 dvx.paragraph(`Work due today: **${dvx.duration(workDuration).toFormat('h:mm')}h**`)
 
-dvx.table(['Task', 'Prio', 'Time', 'Duration'],
-	dueTodayView.map(x => [x.link, x.prio, x.time, x.dur])
+dvx.table(['Task', 'Time', 'Prio', 'Duration'],
+	dueTodayView.map(x => [x.link, x.time, x.prio, x.dur])
 )
 
 dvx.header(3, 'Completed Today')

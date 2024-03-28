@@ -125,7 +125,7 @@ const workDuration = dueToday.dur.array()
 
 const pinnedCards = cards
 	.filter(card => card.flows
-		.map(flow => flow.path)
+		?.map(flow => flow?.path)
 		.some(path => path?.includes('Pinned'))
 	)
 	.map(x => x.file.link)

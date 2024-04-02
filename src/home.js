@@ -57,13 +57,10 @@ const dailyNotes = dvx.pages('"Documents/Daily"')
 const cards = dvx.pages('"Cards"')
 
 const quickTasks = dailyNotes
-	.map(x => ({
-		tasks: x.file.tasks,
-		cday: dvx.date(`20${x.file.name}`)
-	}))
-	.filter(x => x.cday > oneMonthAgo)
-	.tasks
-	.filter(x => !x.completed)
+	.filter(x => dvx.date(`20${x.file.name}`) > oneMonthAgo)
+	.sort(x => x.file.name, 'desc')
+	.map(x => x.file.tasks.filter(task => !task.completed))
+	.filter(x => x.length)
 ;
 
 
@@ -153,7 +150,10 @@ dvx.list(completed.map(x => [x.link]))
 
 dvx.header(3, 'Quick Tasks')
 
-dvx.taskList(quickTasks)
+quickTasks.forEach(x => {
+	dvx.taskList(x)
+	dvx.el('br')
+})
 
 dvx.header(3, 'Scheduled Tasks')
 

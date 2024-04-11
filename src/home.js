@@ -50,6 +50,8 @@ const getOverdueAmount = task => {
 	return overdue < 0 ? overdue : ''
 }
 
+const formatDuration = dur => `**${dvx.duration(dur).toFormat('h:mm')}h**`
+
 
 // # QUERIES
 
@@ -138,7 +140,7 @@ dvx.header(1, pinnedCards.join(' | '))
 
 dvx.header(2, 'Due Today')
 
-dvx.paragraph(`Work due today: **${dvx.duration(workDuration).toFormat('h:mm')}h**`)
+dvx.paragraph(formatDuration(workDuration))
 
 dvx.table(['Task', 'Time', 'Prio', 'Duration'],
 	dueTodayView.map(x => [x.link, x.time, x.prio, x.dur])

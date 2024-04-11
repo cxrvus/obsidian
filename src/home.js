@@ -122,6 +122,10 @@ const workDuration = dueToday.dur.array()
 ;
 
 
+const completedDuration = completed.dur.array()
+	.reduce((acc, mins) => acc.plus(minsToDur(mins)), dvx.duration('0m'))
+;
+
 const pinnedCards = cards
 	.filter(card => card.flows
 		?.map(flow => flow?.path)
@@ -148,7 +152,11 @@ dvx.table(['Task', 'Time', 'Prio', 'Duration'],
 
 dvx.header(3, 'Completed Today')
 
-dvx.list(completed.map(x => [x.link]))
+dvx.paragraph(formatDuration(completedDuration))
+
+dvx.table(['Task', 'Duration'],
+	completed.map(x => [x.link, x.dur])
+)
 
 dvx.header(3, 'Quick Tasks')
 

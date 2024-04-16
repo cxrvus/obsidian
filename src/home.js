@@ -72,7 +72,7 @@ const tasks = cards
 		done: x.done,
 		due: x.due,
 		dur: (x.dur ?? dvx.duration('0m')).as('minutes'),
-		flows: x.flows,
+		props: x.props,
 		link: x.file.link,
 		prio: x.prio ?? 'F',
 		repeat: x.repeat,
@@ -127,7 +127,7 @@ const completedDuration = completed.dur.array()
 ;
 
 const pinnedCards = cards
-	.filter(card => card.flows
+	.filter(card => card.props
 		?.map(flow => flow?.path)
 		.some(path => path?.includes('Pinned'))
 	)

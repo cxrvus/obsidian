@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-undef
-const dvx = dv
+const dv = {};
 
 
 // # TIMES
 
-const today = dvx.date('today')
-const oneMonthAgo = today.minus(dvx.duration('1mo'))
-const future = today.plus(dvx.duration('3mo'))
+const today = dv.date('today')
+const oneMonthAgo = today.minus(dv.duration('1mo'))
+const future = today.plus(dv.duration('3mo'))
 
 
 // # FUNCTIONS
@@ -16,7 +16,7 @@ const getActualDue = card => {
 	if (done && !repeat) return null
 	else if(due) return due
 	else if (!done && repeat) return today
-	else if (done && repeat) return dvx.date(done).plus(dvx.duration(repeat))
+	else if (done && repeat) return dv.date(done).plus(dv.duration(repeat))
 	else return null
 }
 
@@ -50,16 +50,16 @@ const getOverdueAmount = task => {
 	return overdue < 0 ? overdue : ''
 }
 
-const formatDuration = dur => `**${dvx.duration(dur).toFormat('h:mm')}h**`
+const formatDuration = dur => `**${dv.duration(dur).toFormat('h:mm')}h**`
 
 
 // # QUERIES
 
-const dailyNotes = dvx.pages('"Documents/Daily"')
-const cards = dvx.pages('"Cards"')
+const dailyNotes = dv.pages('"Documents/Daily"')
+const cards = dv.pages('"Cards"')
 
 const quickTasks = dailyNotes
-	.filter(x => dvx.date(`20${x.file.name}`) > oneMonthAgo)
+	.filter(x => dv.date(`20${x.file.name}`) > oneMonthAgo)
 	.sort(x => x.file.name, 'desc')
 	.map(x => x.file.tasks.filter(task => !task.completed))
 	.filter(x => x.length)
@@ -71,7 +71,7 @@ const tasks = cards
 		cday: x.file.cday,
 		done: x.done,
 		due: x.due,
-		dur: (x.dur ?? dvx.duration('0m')).as('minutes'),
+		dur: (x.dur ?? dv.duration('0m')).as('minutes'),
 		props: x.props,
 		link: x.file.link,
 		prio: x.prio ?? 'F',
@@ -115,15 +115,15 @@ const scheduledTasksView = dueWheneverView.filter(x => x.dur || x.repeat)
 const scheduledGoalsView = dueWheneverView.filter(x => !(x.dur || x.repeat))
 
 
-const minsToDur = mins => dvx.duration(`${mins}m`)
+const minsToDur = mins => dv.duration(`${mins}m`)
 
 const workDuration = dueToday.dur.array()
-	.reduce((acc, mins) => acc.plus(minsToDur(mins)), dvx.duration('0m'))
+	.reduce((acc, mins) => acc.plus(minsToDur(mins)), dv.duration('0m'))
 ;
 
 
 const completedDuration = completed.dur.array()
-	.reduce((acc, mins) => acc.plus(minsToDur(mins)), dvx.duration('0m'))
+	.reduce((acc, mins) => acc.plus(minsToDur(mins)), dv.duration('0m'))
 ;
 
 const pinnedCards = cards
@@ -138,41 +138,41 @@ const pinnedCards = cards
 
 // # RENDERING
 
-dvx.header(1, today)
+dv.header(1, today)
 
-dvx.header(1, pinnedCards.join(' | '))
+dv.header(1, pinnedCards.join(' | '))
 
-dvx.header(2, 'Due Today')
+dv.header(2, 'Due Today')
 
-dvx.paragraph(formatDuration(workDuration))
+dv.paragraph(formatDuration(workDuration))
 
-dvx.table(['Task', 'Time', 'Prio', 'Duration'],
+dv.table(['Task', 'Time', 'Prio', 'Duration'],
 	dueTodayView.map(x => [x.link, x.time, x.prio, x.dur])
 )
 
-dvx.header(3, 'Completed Today')
+dv.header(3, 'Completed Today')
 
-dvx.paragraph(formatDuration(completedDuration))
+dv.paragraph(formatDuration(completedDuration))
 
-dvx.table(['Task', 'Duration'],
+dv.table(['Task', 'Duration'],
 	completed.map(x => [x.link, x.dur])
 )
 
-dvx.header(3, 'Quick Tasks')
+dv.header(3, 'Quick Tasks')
 
 quickTasks.forEach(x => {
-	dvx.taskList(x)
-	dvx.el('br')
+	dv.taskList(x)
+	dv.el('br')
 })
 
-dvx.header(3, 'Scheduled Tasks')
+dv.header(3, 'Scheduled Tasks')
 
-dvx.table(['Task', 'Prio', 'Due'],
+dv.table(['Task', 'Prio', 'Due'],
 	scheduledTasksView.map(x => [x.link, x.prio, x.due])
 )
 
-dvx.header(2, 'Goals')
+dv.header(2, 'Goals')
 
-dvx.table(['Task', 'Prio', 'Due'],
+dv.table(['Task', 'Prio', 'Due'],
 	scheduledGoalsView.map(x => [x.link, x.prio, x.due])
 )

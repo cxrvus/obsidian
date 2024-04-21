@@ -158,20 +158,20 @@ dvx.table(['Task', 'Duration'],
 	completed.map(x => [x.link, x.dur])
 )
 
-dvx.header(3, 'Quick Tasks')
+dvx.header(2, 'Quick Tasks')
 
 quickTasks.forEach(x => {
 	dvx.taskList(x)
 	dvx.el('br')
 })
 
-dvx.header(3, 'Scheduled Tasks')
+dvx.header(2, 'Scheduled Tasks')
 
 dvx.table(['Task', 'Prio', 'Due'],
 	scheduledTasksView.map(x => [x.link, x.prio, x.due])
 )
 
-dvx.header(2, 'Goals')
+dvx.header(3, 'Goals')
 
 dvx.table(['Task', 'Prio', 'Due'],
 	scheduledGoalsView.map(x => [x.link, x.prio, x.due])

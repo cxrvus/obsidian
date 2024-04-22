@@ -1,5 +1,5 @@
-// eslint-disable-next-line no-undef
-const dv = {};
+import { DataviewInlineApi } from '../types/api/inline-api'
+let dv: DataviewInlineApi 
 
 
 // # TIMES

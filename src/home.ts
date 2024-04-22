@@ -99,7 +99,6 @@ const dueWhenever = dueTasks
 	.sort(x => x.prio + x.due.toString())
 ;
 
-
 const dueTodayView = dueToday
 	.map(x => iconizePrio(x))
 	.map(x => iconizeTime(x))
@@ -132,6 +131,7 @@ const pinnedCards = cards
 		.some(path => path?.includes('Pinned'))
 	)
 	.map(x => x.file.link)
+	.array()
 	.sort()
 ;
 
@@ -162,7 +162,7 @@ dv.header(3, 'Quick Tasks')
 
 quickTasks.forEach(x => {
 	dv.taskList(x)
-	dv.el('br')
+	dv.el('br', null)
 })
 
 dv.header(3, 'Scheduled Tasks')

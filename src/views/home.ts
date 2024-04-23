@@ -38,7 +38,7 @@ export default (dv: DataviewInlineApi) => {
 
 	const dueWhenever = dueTasks
 		.filter(x => x.due > today && x.due < future(dv))
-		.sort(x => x.prio + x.due.toString())
+		.sort(x => x.due.toString() + x.prio)
 	;
 
 	const dueTodayView = dueToday
@@ -103,13 +103,13 @@ export default (dv: DataviewInlineApi) => {
 
 	dv.header(2, 'Scheduled Tasks')
 
-	dv.table(['Task', 'Prio', 'Due'],
-		scheduledTasksView.map(x => [x.link, x.prio, x.due])
+	dv.table(['Task', 'Due', 'Prio'],
+		scheduledTasksView.map(x => [x.link, x.due, x.prio])
 	)
 
 	dv.header(2, 'Goals')
 
-	dv.table(['Task', 'Prio', 'Due'],
-		scheduledGoalsView.map(x => [x.link, x.prio, x.due])
+	dv.table(['Task', 'Due', 'Prio'],
+		scheduledGoalsView.map(x => [x.link, x.due, x.prio])
 	)
 }

@@ -1,57 +1,12 @@
 import { DataviewInlineApi } from '../../lib/dv-types/api/inline-api'
+import { today as getToday, oneMonthAgo, future } from '../utils/dates'
+import * as tasks from '../utils/tasks'
+import * as formatter from '../utils/formatter'
 
 
 export default (dv: DataviewInlineApi) => {
-	// # TIMES
-
-	const today = dv.date('today')
-	const oneMonthAgo = today.minus(dv.duration('1mo'))
-	const future = today.plus(dv.duration('3mo'))
-
-
-	// # FUNCTIONS
-
-	const getActualDue = card => {
-		const { done, due, repeat } = card
-		if (done && !repeat) return null
-		else if(due) return due
-		else if (!done && repeat) return today
-		else if (done && repeat) return dv.date(done).plus(dv.duration(repeat))
-		else return null
-	}
-
-	const prioIcon = prio => ({
-		A: '📌',
-		B: '🔴',
-		C: '🟡',
-		D: '🔵',
-		F: '⚫',
-	}[prio])
-
-	const iconizePrio = task => ({
-		...task, prio: prioIcon(task.prio) ?? 'INVALID'
-	})
-
-	const timeIcon = time => ({
-		A: '🐔', // 08-12
-		B: '🌞', // 12-17
-		H: '⛅', // 17-18
-		X: '🌙', // 21-00
-		Z: '💤', // 00-08
-		_: '◾'
-	}[time])
-
-	const iconizeTime = task => ({
-		...task, time: timeIcon(task.time) ?? 'INVALID'
-	})
-
-	const getOverdueAmount = task => {
-		const overdue = task.due.diff(today, 'days').days
-		return overdue < 0 ? overdue : ''
-	}
-
-	const formatDuration = dur => `**${dv.duration(dur).toFormat('h:mm')}h**`
-
+	const today = getToday(dv)
+	
 
 	// # QUERIES
 
@@ -59,35 +14,21 @@ export default (dv: DataviewInlineApi) => {
 	const cards = dv.pages('"Cards"')
 
 	const quickTasks = dailyNotes
-		.filter(x => dv.date(`20${x.file.name}`) > oneMonthAgo)
+		.filter(x => dv.date(`20${x.file.name}`) > oneMonthAgo(dv))
 		.sort(x => x.file.name, 'desc')
 		.map(x => x.file.tasks.filter(task => !task.completed))
 		.filter(x => x.length)
 	;
 
 
-	const tasks = cards
-		.map(x => ({
-			cday: x.file.cday,
-			done: x.done,
-			due: x.due,
-			dur: (x.dur ?? dv.duration('0m')).as('minutes'),
-			props: x.props,
-			link: x.file.link,
-			prio: x.prio ?? 'F',
-			repeat: x.repeat,
-			time: x.time ?? '_',
-		}))
-		.map(x => ({ ...x, due: getActualDue(x) }))
-		.sort(x => x.due)
-	;
+	const allTasks = tasks.getTasks(dv)
 
-	const completed = tasks
+	const completed = allTasks
 		.filter(x => x.done && x.done >= today)
 		.sort(x => x.link)
 	;
 
-	const dueTasks = tasks.filter(x => x.due)
+	const dueTasks = allTasks.filter(x => x.due != null)
 
 	const dueToday = dueTasks
 		.filter(x => x.due <= today)
@@ -95,21 +36,21 @@ export default (dv: DataviewInlineApi) => {
 	;
 
 	const dueWhenever = dueTasks
-		.filter(x => x.due > today && x.due < future)
+		.filter(x => x.due > today && x.due < future(dv))
 		.sort(x => x.prio + x.due.toString())
 	;
 
 	const dueTodayView = dueToday
-		.map(x => iconizePrio(x))
-		.map(x => iconizeTime(x))
-		.map(x => ({ ...x, time: `${x.time} ${getOverdueAmount(x)}` }))
+		.map(x => formatter.iconizePrio(x))
+		.map(x => formatter.iconizeTime(x))
+		.map(x => ({ ...x, time: `${x.time} ${tasks.getOverdueAmount(dv, x)}` }))
 	;
 
 	const dueWheneverView = dueWhenever
-		.map(x => iconizePrio(x))
+		.map(x => formatter.iconizePrio(x))
 	;
 
-	const scheduledTasksView = dueWheneverView.filter(x => x.dur || x.repeat)
+	const scheduledTasksView = dueWheneverView.filter(x => !!(x.dur || x.repeat))
 
 	const scheduledGoalsView = dueWheneverView.filter(x => !(x.dur || x.repeat))
 
@@ -144,7 +85,7 @@ export default (dv: DataviewInlineApi) => {
 
 	dv.header(2, 'Due Today')
 
-	dv.paragraph(formatDuration(workDuration))
+	dv.paragraph(formatter.formatDuration(dv, workDuration))
 
 	dv.table(['Task', 'Time', 'Prio', 'Duration'],
 		dueTodayView.map(x => [x.link, x.time, x.prio, x.dur])
@@ -152,7 +93,7 @@ export default (dv: DataviewInlineApi) => {
 
 	dv.header(3, 'Completed Today')
 
-	dv.paragraph(formatDuration(completedDuration))
+	dv.paragraph(formatter.formatDuration(dv, completedDuration))
 
 	dv.table(['Task', 'Duration'],
 		completed.map(x => [x.link, x.dur])

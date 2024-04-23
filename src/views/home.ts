@@ -47,14 +47,9 @@ export default (dv: DataviewInlineApi) => {
 		.map(x => ({ ...x, time: `${x.time} ${tasks.getOverdueAmount(dv, x)}` }))
 	;
 
-	const dueWheneverView = dueWhenever
-		.map(x => formatter.iconizePrio(x))
-	;
+	const scheduledTasksView = dueWhenever.map(x => formatter.iconizePrio(x))
 
-	const scheduledTasksView = dueWheneverView.filter(x => !!(x.dur || x.repeat))
-
-	const scheduledGoalsView = dueWheneverView.filter(x => !(x.dur || x.repeat))
-
+	scheduledTasksView.forEach(x => { if (!x.dur) x.prio += '^'})
 
 	const workDuration = durationSum(dv, dueToday)
 
@@ -107,9 +102,5 @@ export default (dv: DataviewInlineApi) => {
 		scheduledTasksView.map(x => [x.link, x.due, x.prio])
 	)
 
-	dv.header(2, 'Goals')
-
-	dv.table(['Task', 'Due', 'Prio'],
-		scheduledGoalsView.map(x => [x.link, x.due, x.prio])
-	)
+	dv.paragraph('*^ = no duration*')
 }

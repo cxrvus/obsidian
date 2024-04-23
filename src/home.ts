@@ -156,14 +156,14 @@ export default function main (dv: DataviewInlineApi) {
 		completed.map(x => [x.link, x.dur])
 	)
 
-	dv.header(3, 'Quick Tasks')
+	dv.header(2, 'Quick Tasks')
 
 	quickTasks.forEach(x => {
 		dv.taskList(x)
 		dv.el('br', null)
 	})
 
-	dv.header(3, 'Scheduled Tasks')
+	dv.header(2, 'Scheduled Tasks')
 
 	dv.table(['Task', 'Prio', 'Due'],
 		scheduledTasksView.map(x => [x.link, x.prio, x.due])

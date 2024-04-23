@@ -25,20 +25,20 @@ export const validateFrontmatter = (frontmatter: {[key: string]: unknown}, propK
 	const propKeysToTypeCodeEntries = Object.entries(propKeysToTypeCodes)
 
 	try { yup.array(yup.array(yup.string().required()).length(2)).validateSync(propKeysToTypeCodeEntries) }
-	catch (_) { throw new Error("type specification must be an object with string values") }
+	catch (_) { throw new Error('type specification must be an object with string values') }
 
 	const propKeysToTypeEntries = propKeysToTypeCodeEntries.map(([key, type]) => [key, typeCodesToTypes[type]])
 	
-	const invalidTypeCode = propKeysToTypeEntries.find(([_, type]) => !type)
+	const invalidTypeCode = propKeysToTypeEntries.find(([, type]) => !type)
 	if (invalidTypeCode) { throw new Error(`unknown type code: ${invalidTypeCode[1]}`) }
 
 	const propKeysToTypes: {[key: string]: yup.Schema} = Object.fromEntries(propKeysToTypeEntries)
 	
 	const errorMessage = Object.entries(frontmatter)
 		.map(entry => validateEntry(entry, propKeysToTypes))
-		.filter(([_, error]) => error)
+		.filter(([, error]) => error)
 		.map(([key, error]) => `[${key}]: ${error}`)
-		.join(";\n\n")
+		.join(';\n\n')
 	;
 
 	return errorMessage
@@ -54,7 +54,7 @@ const validateEntry = (entry: [string, unknown], fullSchema: {[key: string]: yup
 
 	try {
 		entrySchema.validateSync(value);
-		return [key, ""];
+		return [key, ''];
 	} catch (error) {
 		return [key, error.message];
 	}

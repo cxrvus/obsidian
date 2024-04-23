@@ -1,5 +1,7 @@
 import { DataviewInlineApi } from '../lib/dv-types/api/inline-api'
-export default function main (dv: DataviewInlineApi) {
+
+
+export default (dv: DataviewInlineApi) => {
 	// # TIMES
 
 	const today = dv.date('today')

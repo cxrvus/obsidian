@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/refac.js",
   "scripts": {
-    "build": "tsc && cp src/*.js dist",
+    "build": "tsc > /dev/null",
     "refac": "node dist/refac.js"
   },
   "author": "Benito Rabe",

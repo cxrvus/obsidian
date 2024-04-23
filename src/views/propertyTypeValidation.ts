@@ -1,4 +1,4 @@
-import { DataviewInlineApi } from '../lib/dv-types/api/inline-api'
+import { DataviewInlineApi } from '../../lib/dv-types/api/inline-api'
 import * as yup from 'yup';
 
 

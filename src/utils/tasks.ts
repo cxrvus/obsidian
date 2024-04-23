@@ -35,6 +35,9 @@ export const getTasks = (dv: DataviewInlineApi): DataArray<Task> => {
 }
 
 
+export const getDueTasks = (dv: DataviewInlineApi) => getTasks(dv).filter(x => x.due != null)
+
+
 export const getOverdueAmount = (dv: DataviewInlineApi, task: Task) => {
 	// @ts-expect-error cannot safely type due, will deprecate luxon or fix this later
 	const overdue = task.due.diff(today(dv), 'days').days

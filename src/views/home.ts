@@ -2,6 +2,7 @@ import { DataviewInlineApi } from '../../lib/dv-types/api/inline-api'
 import { today as getToday, oneMonthAgo, future } from '../utils/dates'
 import * as tasks from '../utils/tasks'
 import * as formatter from '../utils/formatter'
+import { durationSum } from '../utils/durations'
 
 
 export default (dv: DataviewInlineApi) => {
@@ -23,12 +24,12 @@ export default (dv: DataviewInlineApi) => {
 
 	const allTasks = tasks.getTasks(dv)
 
+	const dueTasks = tasks.getDueTasks(dv)
+
 	const completed = allTasks
 		.filter(x => x.done && x.done >= today)
 		.sort(x => x.link)
 	;
-
-	const dueTasks = allTasks.filter(x => x.due != null)
 
 	const dueToday = dueTasks
 		.filter(x => x.due <= today)
@@ -55,16 +56,10 @@ export default (dv: DataviewInlineApi) => {
 	const scheduledGoalsView = dueWheneverView.filter(x => !(x.dur || x.repeat))
 
 
-	const minsToDur = mins => dv.duration(`${mins}m`)
+	const workDuration = durationSum(dv, dueToday)
 
-	const workDuration = dueToday.dur.array()
-		.reduce((acc, mins) => acc.plus(minsToDur(mins)), dv.duration('0m'))
-	;
+	const completedDuration = durationSum(dv, completed)
 
-
-	const completedDuration = completed.dur.array()
-		.reduce((acc, mins) => acc.plus(minsToDur(mins)), dv.duration('0m'))
-	;
 
 	const pinnedCards = cards
 		.filter(card => card.props
@@ -85,7 +80,7 @@ export default (dv: DataviewInlineApi) => {
 
 	dv.header(2, 'Due Today')
 
-	dv.paragraph(formatter.formatDuration(dv, workDuration))
+	dv.paragraph(workDuration)
 
 	dv.table(['Task', 'Time', 'Prio', 'Duration'],
 		dueTodayView.map(x => [x.link, x.time, x.prio, x.dur])
@@ -93,7 +88,7 @@ export default (dv: DataviewInlineApi) => {
 
 	dv.header(3, 'Completed Today')
 
-	dv.paragraph(formatter.formatDuration(dv, completedDuration))
+	dv.paragraph(completedDuration)
 
 	dv.table(['Task', 'Duration'],
 		completed.map(x => [x.link, x.dur])

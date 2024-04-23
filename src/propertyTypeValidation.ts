@@ -1,4 +1,19 @@
+import { DataviewInlineApi } from '../lib/dv-types/api/inline-api'
 import * as yup from 'yup';
+
+
+export default (dv: DataviewInlineApi) => {
+	const coreTypes = dv.pages('"Cards/Core Types"')[0].types
+	const custTypes = dv.pages('"Cards/Custom Types"')?.[0].types ?? {}
+	const spec = { ...coreTypes, ...custTypes }
+	const cards = dv.pages('"Cards"')
+	const validatedCards = cards.file.map(x => [
+		x.link,
+		validateFrontmatter(x.frontmatter ?? {}, spec)
+	])
+
+	dv.table(['Card', 'Error'], validatedCards.filter(x => x[1]))
+}
 
 
 const linkRegEx = /^\[\[.*\]\]$/;
@@ -21,7 +36,7 @@ const typeCodesToTypes: {[tp: string]: yup.Schema} = {
 }
 
 
-export const validateFrontmatter = (frontmatter: {[key: string]: unknown}, propKeysToTypeCodes: {[key: string]: string}) => {
+const validateFrontmatter = (frontmatter: {[key: string]: unknown}, propKeysToTypeCodes: {[key: string]: string}) => {
 	const propKeysToTypeCodeEntries = Object.entries(propKeysToTypeCodes)
 
 	try { yup.array(yup.array(yup.string().required()).length(2)).validateSync(propKeysToTypeCodeEntries) }

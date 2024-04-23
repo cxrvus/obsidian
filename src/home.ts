@@ -1,4 +1,4 @@
-import { DataviewInlineApi } from '../types/api/inline-api'
+import { DataviewInlineApi } from '../lib/dv-types/api/inline-api'
 export default function main (dv: DataviewInlineApi) {
 	// # TIMES
 

@@ -1,5 +1,5 @@
 import { DataviewInlineApi } from '../../lib/dv-types/api/inline-api'
-import { today as getToday, oneMonthAgo, future } from '../utils/dates'
+import { today as getToday, threeMonthAgo, future } from '../utils/dates'
 import * as tasks from '../utils/tasks'
 import * as formatter from '../utils/formatter'
 import { durationSum } from '../utils/durations'
@@ -15,7 +15,7 @@ export default (dv: DataviewInlineApi) => {
 	const cards = dv.pages('"Cards"')
 
 	const quickTasks = dailyNotes
-		.filter(x => dv.date(`20${x.file.name}`) > oneMonthAgo(dv))
+		.filter(x => dv.date(`20${x.file.name}`) > threeMonthAgo(dv))
 		.sort(x => x.file.name, 'desc')
 		.map(x => x.file.tasks.filter(task => !task.completed))
 		.filter(x => x.length)

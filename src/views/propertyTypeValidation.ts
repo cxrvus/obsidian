@@ -50,6 +50,7 @@ const validateFrontmatter = (frontmatter: {[key: string]: unknown}, propKeysToTy
 	const propKeysToTypes: {[key: string]: yup.Schema} = Object.fromEntries(propKeysToTypeEntries)
 	
 	const errorMessage = Object.entries(frontmatter)
+		.filter(([key]) => !key.startsWith('_'))
 		.map(entry => validateEntry(entry, propKeysToTypes))
 		.filter(([, error]) => error)
 		.map(([key, error]) => `[${key}]: ${error}`)

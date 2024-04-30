@@ -22,7 +22,6 @@ const longDurationRegEx = /^\d+ (d|w|mo)$/;
 const shortDurationRegEx = /^\d+ [mh]$/;
 
 const typeCodesToTypes: {[tp: string]: yup.Schema} = {
-	ANY: yup.mixed(),
 	STR: yup.string(),
 	LSTR: yup.array(yup.string()),
 	NUM: yup.number(),

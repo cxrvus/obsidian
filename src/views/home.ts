@@ -57,7 +57,7 @@ export default (dv: DataviewInlineApi) => {
 
 
 	const pinnedCards = cards
-		.filter(card => card.props
+		.filter(card => card.of
 			?.map(flow => flow?.path)
 			.some(path => path?.includes('Pinned'))
 		)

@@ -11,8 +11,8 @@ export default (dv: DataviewInlineApi) => {
 
 	// # QUERIES
 
-	const dailyNotes = dv.pages('"Documents/Daily"')
-	const cards = dv.pages('"Cards"')
+	const dailyNotes = dv.pages('"Other/Daily"')
+	const notes = dv.pages('"Notes"')
 
 	const quickTasks = dailyNotes
 		.filter(x => dv.date(`20${x.file.name}`) > threeMonthAgo(dv))
@@ -56,8 +56,8 @@ export default (dv: DataviewInlineApi) => {
 	const completedDuration = durationSum(dv, completed)
 
 
-	const pinnedCards = cards
-		.filter(card => card.of
+	const pinnedNotes = notes
+		.filter(note => note.of
 			?.map(flow => flow?.path)
 			.some(path => path?.includes('Pinned'))
 		)
@@ -71,7 +71,7 @@ export default (dv: DataviewInlineApi) => {
 
 	dv.header(1, today)
 
-	dv.header(1, pinnedCards.join(' | '))
+	dv.header(1, pinnedNotes.join(' | '))
 
 	dv.header(2, 'Due Today')
 

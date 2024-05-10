@@ -3,16 +3,16 @@ import * as yup from 'yup';
 
 
 export default (dv: DataviewInlineApi) => {
-	const coreTypes = dv.pages('"Cards/Core Types"')[0]._types
-	const custTypes = dv.pages('"Cards/Custom Types"')?.[0]._types ?? {}
+	const coreTypes = dv.pages('"Notes/Core Types"')[0]._types
+	const custTypes = dv.pages('"Notes/Custom Types"')?.[0]._types ?? {}
 	const spec = { ...coreTypes, ...custTypes }
-	const cards = dv.pages('"Cards"')
-	const validatedCards = cards.file.map(x => [
+	const notes = dv.pages('"Notes"')
+	const validatedNotes = notes.file.map(x => [
 		x.link,
 		validateFrontmatter(x.frontmatter ?? {}, spec)
 	])
 
-	dv.table(['Card', 'Error'], validatedCards.filter(x => x[1]))
+	dv.table(['Note', 'Error'], validatedNotes.filter(x => x[1]))
 }
 
 

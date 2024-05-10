@@ -16,8 +16,8 @@ export type Task = {
 
 
 export const getTasks = (dv: DataviewInlineApi): DataArray<Task> => {
-	const cards = dv.pages('"Cards"')
-	const tasks = cards
+	const notes = dv.pages('"Notes"')
+	const tasks = notes
 		.map(x => ({
 			done: x.done ?? null,
 			due: x.due ?? null,
